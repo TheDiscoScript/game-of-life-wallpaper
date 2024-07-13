@@ -66,5 +66,7 @@ launchctl unload ~/Library/LaunchAgents/com.yourname.gameoflifewallpaper.plist
 You can customize the following parameters in the script:
 
 cell_size: The size of each cell in the Game of Life grid.
+
 cols and rows: The number of columns and rows in the grid.
+
 time.sleep(5): The interval between wallpaper updates.
