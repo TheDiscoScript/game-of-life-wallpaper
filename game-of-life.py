@@ -11,7 +11,7 @@ load_dotenv()
 
 # Configure logging
 logging_path=os.getenv("BASE_LOGGING_PATH")
-logging.basicConfig(filename=logging_path, level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename=logging_path, level=logging.ERROR, format='%(asctime)s %(message)s')
 
 def set_wallpaper(image_path):
     try:
@@ -82,7 +82,6 @@ def update_grid(grid):
 def create_initial_grid(cols, rows):
     # Initialize the grid with random live (1) and dead (0) cells
     grid = [[random.choice([0, 1]) for _ in range(cols)] for _ in range(rows)]
-    logging.debug(f"Initial grid: {grid}")
     return grid
 
 base_wallpaper_path = os.getenv("BASE_WALLPAPER_PATH")
