@@ -40,10 +40,15 @@ def create_game_of_life_image(base_path, iteration, grid, cell_size):
         image = Image.new('RGB', (width, height), (0, 0, 0)) #BG color
         draw = ImageDraw.Draw(image)
 
-        for y in range(len(grid)):
-            for x in range(len(grid[0])):
-                if grid[y][x]:
-                    draw.rectangle([x * cell_size, y * cell_size, (x + 1) * cell_size - 1, (y + 1) * cell_size - 1], fill=(255, 105, 180)) #PINK alive
+        # y = row index, row = row values
+        for y, row in enumerate(grid):
+            # x = col index, cell = cell value 0 or 1
+            for x, cell in enumerate(row):
+                if cell:
+                    #calculate corners of alive cell
+                    top_left = (x * cell_size, y * cell_size)
+                    bottom_right = ((x + 1) * cell_size - 1, (y + 1) * cell_size - 1)
+                    draw.rectangle([top_left, bottom_right], fill=(255, 105, 180)) # Pink color = Alive cell
 
         image.save(image_path)
         logging.debug(f"Image saved at {image_path} with iteration {iteration}")
@@ -53,22 +58,36 @@ def create_game_of_life_image(base_path, iteration, grid, cell_size):
         return None
 
 def update_grid(grid):
-    new_grid = [[0 for _ in range(len(grid[0]))] for _ in range(len(grid))]
-    for y in range(len(grid)):
-        for x in range(len(grid[0])):
-            live_neighbors = sum([grid[(y + dy) % len(grid)][(x + dx) % len(grid[0])] for dy in range(-1, 2) for dx in range(-1, 2)]) - grid[y][x]
-            if grid[y][x] == 1 and live_neighbors in [2, 3]:
-                new_grid[y][x] = 1
-            elif grid[y][x] == 0 and live_neighbors == 3:
-                new_grid[y][x] = 1
+    # 8 positions agains center cell
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    # new grid with same proportions with dead cells
+    new_grid = [[0] * len(grid[0]) for _ in range(len(grid))]
+    for y, row in enumerate(grid):
+        for x, cell in enumerate(row):
+            # Count live neighbors - sums values of 8 positions around the cell
+            live_neighbors = sum(
+                grid[(y + dy) % len(grid)][(x + dx) % len(grid[0])]
+                for dy, dx in directions
+            )
+
+            # Apply the Game of Life rules
+            if cell == 1:  # Current cell is alive
+                if live_neighbors in [2, 3]:
+                    new_grid[y][x] = 1  # Stays alive
+            else:  # Current cell is dead
+                if live_neighbors == 3:
+                    new_grid[y][x] = 1  # Becomes alive
     return new_grid
 
 def create_initial_grid(cols, rows):
-    return [[random.choice([0, 1]) for _ in range(cols)] for _ in range(rows)]
+    # Initialize the grid with random live (1) and dead (0) cells
+    grid = [[random.choice([0, 1]) for _ in range(cols)] for _ in range(rows)]
+    logging.debug(f"Initial grid: {grid}")
+    return grid
 
 base_wallpaper_path = os.getenv("BASE_WALLPAPER_PATH")
 iteration = 0 #0
-cell_size = 15 #10 # size of each cell in pixels - performance impact
+cell_size = 12 #10 # size of each cell in pixels - performance impact
 cols, rows = 100, 80  # grid size #80, 60
 
 # Init Game of Life grid
