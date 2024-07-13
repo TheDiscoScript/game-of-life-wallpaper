@@ -17,6 +17,13 @@ BASE_WALLPAPER_PATH=/path/to/your/wallpaper
 BASE_LOGGING_PATH=/tmp/wallpaper_test.log
 ```
 
+virtual myenv:
+
+```
+source myenv/bin/activate
+deactivate
+```
+
 ## How to Run
 
 Run the script using the following command:
