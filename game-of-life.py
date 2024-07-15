@@ -74,6 +74,8 @@ def update_grid(grid):
             if cell == 1:  # Current cell is alive
                 if live_neighbors in [2, 3]:
                     new_grid[y][x] = 1  # Stays alive
+                else:
+                    new_grid[y][x] = 0 # dies!!
             else:  # Current cell is dead
                 if live_neighbors == 3:
                     new_grid[y][x] = 1  # Becomes alive
@@ -99,7 +101,7 @@ while True:
         logging.debug(f'Wallpaper updated for iteration {iteration}')
         iteration += 1
         grid = update_grid(grid)
-        time.sleep(0.5)  # seconds interval for render update
+        time.sleep(0.2)  # seconds interval for render update
 
     # Cleanup old images
     if iteration > 1:
